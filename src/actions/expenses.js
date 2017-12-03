@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import dB from '../firebase/firebase';
+import database from '../firebase/firebase';
 
 // ADD_EXPENSE
 export const addExpense = (expense) => ({
@@ -17,7 +17,7 @@ export const startAddExpense = (expenseData = {}) => {
     } = expenseData;
     const expense = { description, note, amount, createdAt };
 
-    return dB.ref('expenses').push(expense).then((ref) => {
+    return database.ref('expenses').push(expense).then((ref) => {
       dispatch(addExpense({
         id: ref.key,
         ...expense
@@ -32,6 +32,14 @@ export const removeExpense = ({ id } = {}) => ({
   id
 });
 
+export const startRemoveExpense = ({ id } = {}) => {
+  return (dispatch) => {
+    return database.ref(`expenses/${id}`).remove().then(() => {
+      dispatch(removeExpense({ id }));
+    });
+  };
+};
+
 // EDIT_EXPENSE
 export const editExpense = (id, updates) => ({
   type: 'EDIT_EXPENSE',
@@ -39,27 +47,33 @@ export const editExpense = (id, updates) => ({
   updates
 });
 
+export const startEditExpense = (id, updates) => {
+  return (dispatch) => {
+    return database.ref(`expenses/${id}`).update(updates).then(() => {
+      dispatch(editExpense(id, updates));
+    });
+  };
+};
+
 // SET_EXPENSES
 export const setExpenses = (expenses) => ({
   type: 'SET_EXPENSES',
   expenses
 });
 
-// export const startSetExpenses;
-export const startSetExpenses = (expenseData = {}) => {
+export const startSetExpenses = () => {
   return (dispatch) => {
-    return dB.ref('expenses').once('value').then((snapShot) => {
-      const expenses = []
-      snapShot.forEach((childSnapshot) => {
+    return database.ref('expenses').once('value').then((snapshot) => {
+      const expenses = [];
+
+      snapshot.forEach((childSnapshot) => {
         expenses.push({
           id: childSnapshot.key,
           ...childSnapshot.val()
-        })
-      })
-      dispatch(setExpenses(expenses))
-    })
+        });
+      });
+
+      dispatch(setExpenses(expenses));
+    });
   };
 };
-//1. Fetch all the data
-//2. Parse all the data into an array
-//3. Dispatch SET_EXPENSES
