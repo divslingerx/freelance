@@ -3,8 +3,7 @@
 exports[`should correctly render LoginPage 1`] = `
 <div>
   <button>
-    Login with Google
+    Login
   </button>
-  w
 </div>
 `;
