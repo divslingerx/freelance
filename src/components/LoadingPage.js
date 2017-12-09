@@ -1,9 +1,23 @@
 import React from 'react';
 
 const LoadingPage = () => (
-  <div className="loader">
-    <p>LOADING...</p>
+  <div id='animation'>
+  <div className='record'>
+    <div className='vinyl'>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
   </div>
-);
+  <div className='turntable'>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</div>
+)
+
 
 export default LoadingPage;
